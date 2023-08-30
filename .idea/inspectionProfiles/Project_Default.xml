@@ -1,0 +1,8 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="JSValidateTypes" enabled="false" level="WEAK WARNING" enabled_by_default="false">
+      <scope name="Scratches and Consoles" level="WEAK WARNING" enabled="false" />
+    </inspection_tool>
+  </profile>
+</component>
