@@ -9,8 +9,8 @@ export const add = async (req, res) => {
             return res.status(400).json(errors.array())
         }
 
-        const {userId} = req
         const {bicycles, addressId} = req.body
+        const {userId} = req
 
         const orderDoc = OrderModel({userId, addressId})
         const order = await orderDoc.save()

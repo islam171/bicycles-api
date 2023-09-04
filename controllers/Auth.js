@@ -63,6 +63,7 @@ export const register = async (req, res) => {
             username: req.body.username,
             password: req.body.password,
             avatar: req.body.avatar,
+            photos: ['64f4b971b043f9a0811e7d66', '64f4b928017c95dd58a2989d']
         })
 
         const user = await doc.save()
@@ -101,3 +102,4 @@ export const getMe = async (req, res) => {
         res.status(500).json({message: 'Нет доступа'})
     }
 }
+

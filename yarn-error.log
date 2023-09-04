@@ -1,0 +1,57 @@
+Arguments: 
+  C:\Program Files\nodejs\node.exe C:\Program Files (x86)\Yarn\bin\yarn.js add multer
+
+PATH: 
+  C:\Program Files (x86)\Embarcadero\Studio\21.0\bin;C:\Users\Public\Documents\Embarcadero\Studio\21.0\Bpl;C:\Program Files (x86)\Embarcadero\Studio\21.0\bin64;C:\Users\Public\Documents\Embarcadero\Studio\21.0\Bpl\Win64;E:\Приложения\Delphi\Bin;E:\Приложения\Delphi\Projects\Bpl\;C:\Program Files (x86)\Common Files\Intel\Shared Libraries\redist\intel64\compiler;C:\Program Files (x86)\Common Files\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Windows\System32\OpenSSH\;C:\Program Files\NVIDIA Corporation\NVIDIA NvDLISR;C:\Program Files (x86)\NVIDIA Corporation\PhysX\Common;C:\Program Files\Microsoft SQL Server\130\Tools\Binn\;E:\Приложения\tmd\bin;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files (x86)\IVI Foundation\VISA\WinNT\Bin\;C:\Program Files\IVI Foundation\VISA\Win64\Bin\;C:\Program Files (x86)\IVI Foundation\VISA\WinNT\Bin;C:\Program Files (x86)\National Instruments\Shared\LabVIEW CLI;C:\Program Files (x86)\Yarn\bin\;E:\Приложения\PHP;C:\ProgramData\ComposerSetup\bin;C:\Program Files\dotnet\;C:\Program Files\GitHub CLI\;C:\Program Files\nodejs\;C:\Program Files\mongosh-1.10.6-win32-x64\bin;E:\Приложения\Shared\LabVIEW CLI;C:\Users\islam\AppData\Local\Programs\Python\Python310\Scripts\;C:\Users\islam\AppData\Local\Programs\Python\Python310\;C:\Users\islam\AppData\Local\Microsoft\WindowsApps;C:\Users\islam\.dotnet\tools;E:\Приложения\Microsoft VS Code\bin;C:\Users\islam\AppData\Local\atom\bin;E:\Приложения\PyCharm 2022.1.1\bin;;E:\Приложения\WebStorm 2022.2\bin;;C:\Users\islam\AppData\Local\Yarn\bin;E:\Приложения\PyCharm Community Edition 2022.3.2\bin;;E:\Islam\JetBrains\PhpStorm 2022.3.2\bin;;C:\Users\islam\AppData\Roaming\Composer\vendor\bin;C:\Users\islam\AppData\Local\GitHubDesktop\bin;C:\Users\islam\AppData\Roaming\npm;E:\Islam\Program\Api\bicycles-api\node_modules\.bin
+
+Yarn version: 
+  1.22.19
+
+Node version: 
+  18.17.1
+
+Platform: 
+  win32 x64
+
+Trace: 
+  Error: https://registry.npmjs.org/express: tunneling socket could not be established, cause=getaddrinfo ENOTFOUND host
+      at ClientRequest.onError (C:\Program Files (x86)\Yarn\lib\cli.js:152376:17)
+      at Object.onceWrapper (node:events:629:26)
+      at ClientRequest.emit (node:events:514:28)
+      at Socket.socketErrorListener (node:_http_client:501:9)
+      at Socket.emit (node:events:514:28)
+      at emitErrorNT (node:internal/streams/destroy:151:8)
+      at emitErrorCloseNT (node:internal/streams/destroy:116:3)
+      at process.processTicksAndRejections (node:internal/process/task_queues:82:21)
+
+npm manifest: 
+  {
+    "name": "bicycles-api",
+    "type": "module",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+      "test": "echo \"Error: no test specified\" && exit 1",
+      "start": "node index.js",
+      "dev": "nodemon index.js"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+      "express": "^4.18.2",
+      "express-validator": "^7.0.1",
+      "jsonwebtoken": "^9.0.0",
+      "mongoose": "^7.3.1",
+      "multer": "^1.4.5-lts.1",
+      "nodemon": "^3.0.1",
+      "path": "^0.12.7"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
