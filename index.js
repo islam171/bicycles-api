@@ -38,28 +38,6 @@ app.use(json());
 app.use(express.static('uploads'))
 
 
-
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
-
-const storage = multer.diskStorage({
-	destination: (reg, file, cb) => {
-		cb(null, 'files')
-	},
-	filename: (req, file, cb) => {
-		cb(null, file.originalname)
-	},
-})
-app.use(express.static(__dirname))
-const upload = multer({ storage: storage })
-
-
-
-
-app.post('/upload', upload.single('image'), (req, res) => {
-	res.json(req.file)
-})
-
 //Auth
 app.post('/api/v1/auth/login', loginValidator, login)
 app.post('/api/v1/auth/register', registerValidator, register)
