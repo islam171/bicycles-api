@@ -181,8 +181,11 @@ export const getAll = async (req, res) => {
 		const bicycleName = req.query._search
 		const frameMaterialId = req.query._frameMaterial
 		const colorId = req.query._color
+		const {_maxPrice, _minPrice} = req.query 
+
 
 		let filter = {}
+
 		if (categoryId) {
 			filter.categoryId = categoryId
 		}
@@ -194,6 +197,15 @@ export const getAll = async (req, res) => {
 		}
 		if (colorId) {
 			filter.colorId = colorId
+		}
+		if(_maxPrice || _minPrice){
+			filter.price = {$gte: 0, $lte: 0}
+		}
+		if(_maxPrice){
+			filter.price["$lte"] = _maxPrice
+		}
+		if(_minPrice){
+			filter.price["$gte"] = _minPrice
 		}
 
 		const skip = page * limit - limit
@@ -234,6 +246,18 @@ export const getByPackage = async (req, res) => {
 		}
 		res.json(bicycles)
 	} catch (e) {
+		console.log(e)
+		res.status(500).json({ message: 'error' })
+	}
+}
+
+export const getMaxMinPrice = async (req, res) => {
+	try{
+		const max = await	BicycleModel.findOne({}).sort({ price: -1 }).limit(1).exec();
+		const min = await	BicycleModel.findOne({}).sort({ price: 1 }).limit(1).exec();
+	
+ 		res.json({min: min.price, max: max.price})
+	}catch(e){
 		console.log(e)
 		res.status(500).json({ message: 'error' })
 	}

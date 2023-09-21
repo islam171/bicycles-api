@@ -1,6 +1,6 @@
-import OrderListModel from "../models/OrderList.js";
-import OrderModel from "../models/Order.js";
-import {validationResult} from "express-validator";
+import { validationResult } from "express-validator"
+import OrderModel from "../models/Order.js"
+import OrderListModel from "../models/OrderList.js"
 
 export const add = async (req, res) => {
     try{
@@ -9,10 +9,11 @@ export const add = async (req, res) => {
             return res.status(400).json(errors.array())
         }
 
-        const {bicycles, addressId} = req.body
+        const {bicycles, addressId, name, phone, email} = req.body
+
         const {userId} = req
 
-        const orderDoc = OrderModel({userId, addressId})
+        const orderDoc = OrderModel({userId, addressId, phone, name, email})
         const order = await orderDoc.save()
 
         await bicycles.map(async (bike) => {
@@ -50,6 +51,7 @@ export const get = async (req, res) => {
 
         const order = await OrderModel.findOne({_id: orderId, userId}).populate(['addressId']).exec()
         const orderList = await OrderListModel.find({orderId, userId}).exec()
+
 
         res.json({
             order, orderList

@@ -29,7 +29,10 @@ const BicycleSchema = mongoose.Schema(
 			type: mongoose.Schema.Types.ObjectId,
 			ref: 'Category',
 		},
-		colorId: String, //Сборка пакетов
+		colorId: {
+			type: mongoose.Schema.Types.ObjectId,
+			ref: 'Color',
+		}, //Цвет пакетов
 	},
 	{
 		timestamps: true,

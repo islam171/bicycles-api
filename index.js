@@ -2,9 +2,6 @@ import cors from 'cors'
 import express, { json } from 'express'
 import fileUpload from "express-fileupload"
 import mongoose from 'mongoose'
-import multer from 'multer'
-import path from 'path'
-import { fileURLToPath } from 'url'
 import * as AddressController from './controllers/Address.js'
 import { getMe, login, register } from './controllers/Auth.js'
 import * as BicycleController from './controllers/Bicycle.js'
@@ -44,6 +41,10 @@ app.post('/api/v1/auth/register', registerValidator, register)
 app.get('/api/v1/auth/me', checkAuth, getMe)
 
 //Bicycles
+app.get(
+	'/api/v1/bicycle/price',
+	BicycleController.getMaxMinPrice
+)
 app.post(
 	'/api/v1/bicycle',
 	checkAdmin,
@@ -59,6 +60,7 @@ app.get(
 	checkAdmin,
 	BicycleController.getByPackage
 )
+
 
 //Cart
 app.post('/api/v1/cart/:id', checkAuth, addBicycleToCart, CartController.add)

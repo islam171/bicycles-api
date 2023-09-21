@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from "mongoose"
 
 const OrderModel = mongoose.Schema({
     userId: {
@@ -9,6 +9,18 @@ const OrderModel = mongoose.Schema({
     addressId:{
        type: mongoose.Schema.Types.ObjectId,
         ref: 'Address',
+        required: true
+    },
+    name: {
+        type: String,
+        required: true
+    },
+    phone: {
+        type: String,
+        required: true
+    },
+    email: {
+        type: String,
         required: true
     }
 
