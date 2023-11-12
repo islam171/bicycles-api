@@ -3,7 +3,8 @@ import express, { json } from 'express'
 import fileUpload from "express-fileupload"
 import mongoose from 'mongoose'
 import * as AddressController from './controllers/Address.js'
-import { getMe, login, register } from './controllers/Auth.js'
+
+import { getIsAdmin, getMe, getNewTokens, login, register } from './controllers/Auth.js'
 import * as BicycleController from './controllers/Bicycle.js'
 import * as CartController from './controllers/Cart.js'
 import * as CategoryController from './controllers/Category.js'
@@ -11,11 +12,15 @@ import * as ColorController from './controllers/Color.js'
 import * as FrameMaterialController from './controllers/frameMaterial.js'
 import * as OrderController from './controllers/Order.js'
 import * as PackageController from './controllers/Package.js'
+import * as UserController from './controllers/User.js'
+
 import checkAdmin from './utils/checkAdmin.js'
 import checkAuth from './utils/checkAuth.js'
 import { loginValidator, registerValidator } from './validation/Auth.js'
-import { addBicycleToCart } from './validation/Cart.js'
 import { addOrderValidation } from './validation/Order.js'
+
+
+
 
 const app = express()
 const PORT = 3001
@@ -33,12 +38,19 @@ app.use(cors())
 app.use(fileUpload())
 app.use(json());
 app.use(express.static('uploads'))
-
+app.use('/uploads', express.static('uploads'))
 
 //Auth
 app.post('/api/v1/auth/login', loginValidator, login)
 app.post('/api/v1/auth/register', registerValidator, register)
 app.get('/api/v1/auth/me', checkAuth, getMe)
+app.get('/api/v1/auth', checkAuth, getNewTokens)
+app.get('/api/v1/isAdmin', checkAdmin, getIsAdmin)
+
+app.get('/api/v1/users', checkAdmin, UserController.getUsers)
+app.get('/api/v1/user/:id', checkAdmin, UserController.getUser)
+app.delete('/api/v1/user/:id', checkAdmin, UserController.deleteUser)
+app.patch('/api/v1/user/:id', checkAdmin, UserController.update)
 
 //Bicycles
 app.get(
@@ -63,9 +75,10 @@ app.get(
 
 
 //Cart
-app.post('/api/v1/cart/:id', checkAuth, addBicycleToCart, CartController.add)
+app.post('/api/v1/cart/:id', checkAuth, CartController.add)
 app.delete('/api/v1/cart/:id', checkAuth, CartController.del)
 app.patch('/api/v1/cart/:id', checkAuth, CartController.delOneProduct)
+app.patch('/api/v1/cart/set/:id', checkAuth, CartController.setProduct)
 app.delete('/api/v1/cart', checkAuth, CartController.clear)
 app.get('/api/v1/cart', checkAuth, CartController.get)
 
@@ -99,7 +112,7 @@ app.get('/api/v1/color', ColorController.getAll)
 //frameMaterial
 app.get('/api/v1/frame', FrameMaterialController.getAll)
 app.get('/api/v1/frame/:id', FrameMaterialController.get)
-app.post('/api/v1/frame', checkAdmin, FrameMaterialController.create)
+app.post('/api/v1/material', checkAdmin, FrameMaterialController.create)
 app.delete('/api/v1/frame/:id', checkAdmin, FrameMaterialController.del)
 app.patch('/api/v1/frame/:id', checkAdmin, FrameMaterialController.update)
 

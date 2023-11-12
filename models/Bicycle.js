@@ -12,13 +12,12 @@ const BicycleSchema = mongoose.Schema(
 			required: true,
 		},
 		description: String,
-		image: String,
+		image: [String],
 		rating: Number,
 		modelYear: Number,
 		frameSize: Number, // Размер рамы
 		SpeedsNumber: Number, // Количество скоростей
 		WheelDiameter: Number, // Диаметр колес
-		Seat: Boolean, //Сиденье
 		folding: Boolean, //складной
 
 		frameMaterialId: {
@@ -29,10 +28,10 @@ const BicycleSchema = mongoose.Schema(
 			type: mongoose.Schema.Types.ObjectId,
 			ref: 'Category',
 		},
-		colorId: {
+		color: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: 'Color',
-		}, //Цвет пакетов
+		} //Цвет пакетов
 	},
 	{
 		timestamps: true,

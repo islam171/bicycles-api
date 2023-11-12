@@ -1,4 +1,4 @@
-import jwt from "jsonwebtoken";
+import jwt from "jsonwebtoken"
 import UserModel from '../models/User.js'
 
 export default async (req, res, next) => {
@@ -7,7 +7,7 @@ export default async (req, res, next) => {
     if(token){
         try {
             const decoded = jwt.verify(token,'secret123')
-            req.userId = decoded._id;
+            req.userId = decoded.user_id;
             const user = await UserModel.findOne({_id: req.userId}).exec()
             if(user.username !== 'Islam1'){
                 return res.status(403).json({

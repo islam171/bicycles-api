@@ -1,7 +1,7 @@
-import mongoose from "mongoose";
+import mongoose from "mongoose"
 
 const CartModel = mongoose.Schema({
-        bicycleId: {
+        bicycle: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Bicycle',
             required: true

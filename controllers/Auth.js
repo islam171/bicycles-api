@@ -1,43 +1,35 @@
-import {validationResult} from "express-validator";
-import UserModel from '../models/User.js'
+import { validationResult } from "express-validator"
 import jwt from 'jsonwebtoken'
+import UserModel from '../models/User.js'
 
 export const login = async (req, res) => {
-    try{
+    try {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json(errors.array())
         }
         const {username} = req.body
-        // Првоерка логина и пароля
+        // Проверка логина и пароля
         const user = await UserModel.findOne({username: username})
-        if(!user){
-            return res.status(404).json({
-                message: 'Пользотель не найден'
-            })
-        }
-
-        if(req.body.password !== user._doc.password){
+        if (!user) {
             return res.status(400).json({
                 message: 'Неверный логин или пароль'
             })
         }
 
-        const token = jwt.sign({
-                _id: user._id
-            },
-            'secret123',
-            {
-                expiresIn: '30d'
+        if (req.body.password !== user._doc.password) {
+            return res.status(400).json({
+                message: 'Неверный логин или пароль'
             })
+        }
 
+        const token = jwt.sign({user_id: user._id}, 'secret123', {expiresIn: '30d'})
         const {password, ...userdata} = user._doc
 
         res.json({
-            ...userdata,
-            token
+            ...userdata, token
         })
-    }catch(e){
+    } catch (e) {
         console.log(e)
         res.status(500).json({message: "Не удалось авторизоватся"})
     }
@@ -67,17 +59,16 @@ export const register = async (req, res) => {
         })
 
         const user = await doc.save()
-        const token = jwt.sign({
-                _id: user._id
-            },
-            'secret123',
-            {
-                expiresIn: '30d'
-            })
+        const accessToken = jwt.sign({user_id: user.id}, 'secret123', {expiresIn: '1h'})
+        const refreshToken = jwt.sign({
+            user_id: user._id
+        }, 'secret123', {
+            expiresIn: '30d'
+        })
 
         const {password, ...userdata} = user._doc
 
-        res.json({...userdata, token})
+        res.json({...userdata, token: refreshToken})
     } catch (e) {
         console.log(e)
         res.status(500).json({message: 'Не удолость зарегистрироватся'})
@@ -85,21 +76,45 @@ export const register = async (req, res) => {
 }
 
 export const getMe = async (req, res) => {
-    try{
+    try {
         const userId = req.userId
         const user = await UserModel.findOne({_id: userId})
-        if(user){
+        if (user) {
             const {password, ...userdata} = user._doc
 
             res.json({
                 ...userdata
             })
-        }else{
-           res.status(404).json({message: 'Пользовотель не найден'})
+        } else {
+            res.status(404).json({message: 'Пользовотель не найден'})
         }
-    }catch(e){
+    } catch (e) {
         console.log(e)
         res.status(500).json({message: 'Нет доступа'})
     }
 }
 
+
+export const getNewTokens = async (req, res) => {
+    const user = await UserModel.findById(req.userId)
+
+    if(!user){
+        return res.status(403).json({message: "Авторизуйтесь"})
+    }
+
+    const accessToken = jwt.sign({user_id: user._id}, 'secret123', {expiresIn: '1h'})
+    const refreshToken = jwt.sign({
+        user_id: user._id
+    }, 'secret123', {
+        expiresIn: '30d'
+    })
+
+    return res.json({user, accessToken, refreshToken})
+}
+
+
+export const getIsAdmin = (req, res) => {
+    if(req.userId){
+        return res.json({message: "success"})
+    }
+} 

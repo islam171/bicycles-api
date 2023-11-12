@@ -1,4 +1,4 @@
-import ColorModel from "../models/Color.js";
+import ColorModel from "../models/Color.js"
 
 export const create = async (req, res) => {
     try{
@@ -6,7 +6,7 @@ export const create = async (req, res) => {
 
         const oldColor = await ColorModel.findOne({name}).exec()
         if(oldColor){
-           return res.status(401).json({message: "Такой цвет уже существует"})
+           return res.status(400).json({message: "Такой цвет уже существует"})
         }
 
         const doc = ColorModel({name})
@@ -67,7 +67,8 @@ export const update = async (req, res) => {
         }
 
         await ColorModel.findOneAndUpdate({_id:colorId}, {name})
-        res.json({message: 'success'})
+        const newCategory = await ColorModel.findById(colorId).exec()
+        res.json(newCategory)
     }catch (e) {
         console.log(e)
         res.status(500).json("error")

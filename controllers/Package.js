@@ -1,5 +1,4 @@
-import PackageModel from "../models/package.js";
-import ColorModel from "../models/Color.js";
+import PackageModel from "../models/package.js"
 
 export const create = async (req, res) => {
     try{
@@ -62,12 +61,13 @@ export const update = async (req, res) => {
         const {name} = req.body
         const packageId = req.params.id
 
-        const oldPackage= await ColorModel.findOne({_id:packageId}).exec()
+        const oldPackage= await PackageModel.findOne({_id:packageId}).exec()
         if(!oldPackage){
             return res.status(404).json({message: "Комплектация не найдена"})
         }
         await PackageModel.findByIdAndUpdate(packageId, {name})
-        res.json({message: 'success'})
+        const newPackage = await PackageModel.findById(packageId).exec()
+        res.json(newPackage)
     }catch (e) {
         console.log(e)
         res.status(500).json("error")

@@ -22,43 +22,59 @@ export const create = async (req, res) => {
 			frameSize,
 			SpeedsNumber,
 			WheelDiameter,
-			Seat,
 			folding,
 			categoryId,
 			packages,
 			frameMaterialId,
-			colorId,
+			color
 		} = req.body
+
 
 		const oldBicycle = await BicycleModel.findOne({ name }).exec()
 		if (oldBicycle) {
 			return res
 				.status(400)
-				.json({ message: 'Велосипед с таким именим уже есть' })
+				.json({ message: 'Велосипед с таким именем уже есть' })
 		}
 
 		let bicycle = {}
 
 		if(req.files){
-			let filename = Date.now().toString() + req.files.image.name
-			const __dirname = dirname(fileURLToPath(import.meta.url))
-			req.files.image.mv(path.join(__dirname, '..', 'uploads', filename))
+			const files = [];
+
+			if(req.files.image.length > 1){
+				for(const key in req.files.image){
+					let file = req.files.image[key]
+					let filename = Date.now().toString() + file.name
+					const __dirname = dirname(fileURLToPath(import.meta.url))	
+					const pathFile = path.join(__dirname, '..', 'uploads/image/bicycle', filename)
+					file.mv(pathFile)
+					files.push(`/uploads/image/bicycle/${filename}`)
+				}
+			}else{
+					let file = req.files.image
+					let filename = Date.now().toString() + file.name
+					const __dirname = dirname(fileURLToPath(import.meta.url))	
+					const pathFile = path.join(__dirname, '..', 'uploads/image/bicycle', filename)
+					file.mv(pathFile)
+					files.push(`/uploads/image/bicycle/${filename}`)
+
+			}			
 
 			const doc = BicycleModel({
 				name,
 				price,
 				description,
-				image: filename,
+				image: files,
 				rating,
 				modelYear,
 				frameSize,
 				SpeedsNumber,
 				WheelDiameter,
-				Seat,
 				folding,
 				categoryId,
 				frameMaterialId,
-				colorId,
+				color,
 			})
 
 			bicycle = await doc.save()
@@ -74,11 +90,10 @@ export const create = async (req, res) => {
 				frameSize,
 				SpeedsNumber,
 				WheelDiameter,
-				Seat,
 				folding,
 				categoryId,
 				frameMaterialId,
-				colorId,
+				color,
 			})
 
 			bicycle = await doc.save()
@@ -107,7 +122,6 @@ export const update = async (req, res) => {
 			name,
 			price,
 			description,
-			image,
 			rating,
 			modelYear,
 			frameSize,
@@ -121,23 +135,55 @@ export const update = async (req, res) => {
 		if (oldBicycle && oldBicycle._id.toString() !== bicycleId) {
 			return res
 				.status(400)
-				.json({ message: 'Продукт с таким именим уже существует' })
+				.json({ message: 'Продукт с таким именем уже существует' })
 		}
-		await BicycleModel.findByIdAndUpdate(bicycleId, {
-			name,
-			price,
-			description,
-			image,
-			rating,
-			modelYear,
-			frameSize,
-			SpeedsNumber,
-			WheelDiameter,
-			Seat,
-			folding,
-		}).exec()
-		await packageBicycle.deleteMany({ bicycleId })
-		await packages.map(async pack => {
+
+
+		if(req.files){
+			const files = [];
+
+			for(const key in req.files.image){
+				let file = req.files.image[key]
+				let filename = Date.now().toString() + file.name
+				const __dirname = dirname(fileURLToPath(import.meta.url))	
+				const pathFile = path.join(__dirname, '..', 'uploads/image/bicycle', filename)
+				file.mv(pathFile)
+				files.push(`/uploads/image/bicycle/${filename}`)
+			}
+			
+
+			await BicycleModel.findByIdAndUpdate(bicycleId, {
+				name,
+				price,
+				description,
+				image: files,
+				rating,
+				modelYear,
+				frameSize,
+				SpeedsNumber,
+				WheelDiameter,
+				Seat,
+				folding,
+			}).exec()
+
+		}else{
+			await BicycleModel.findByIdAndUpdate(bicycleId, {
+				name,
+				price,
+				description,
+				image: "",
+				rating,
+				modelYear,
+				frameSize,
+				SpeedsNumber,
+				WheelDiameter,
+				Seat,
+				folding,
+			}).exec()
+		}
+
+		packages && await packageBicycle.deleteMany({ bicycleId })
+		packages && await packages.map(async pack => {
 			const packDoc = PackagesBicycleModel({
 				packageId: pack,
 				bicycleId: bicycleId,
@@ -196,7 +242,7 @@ export const getAll = async (req, res) => {
 			filter.frameMaterialId = frameMaterialId
 		}
 		if (colorId) {
-			filter.colorId = colorId
+			filter.colors = colorId
 		}
 		if(_maxPrice || _minPrice){
 			filter.price = {$gte: 0, $lte: 0}
@@ -253,6 +299,12 @@ export const getByPackage = async (req, res) => {
 
 export const getMaxMinPrice = async (req, res) => {
 	try{
+		const bicycle = await BicycleModel.find()
+		
+		if(bicycle.length == 0){
+			return res.status(404).json({message: 'Велосипеды не найдены'})
+		}
+
 		const max = await	BicycleModel.findOne({}).sort({ price: -1 }).limit(1).exec();
 		const min = await	BicycleModel.findOne({}).sort({ price: 1 }).limit(1).exec();
 	

@@ -1,4 +1,4 @@
-import CategoryModel from "../models/Category.js";
+import CategoryModel from "../models/Category.js"
 
 export const create = async (req, res) => {
     try{
@@ -60,7 +60,8 @@ export const update = async (req, res) => {
         }
 
         await CategoryModel.findByIdAndUpdate(bicycleId, {name})
-        res.json({message: 'success'})
+        const newCategory = await CategoryModel.findById(bicycleId).exec() 
+        res.json(newCategory)
 
     }catch (e) {
         console.log(e)

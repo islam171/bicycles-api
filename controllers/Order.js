@@ -1,4 +1,5 @@
 import { validationResult } from "express-validator"
+import BicycleModel from "../models/Bicycle.js"
 import OrderModel from "../models/Order.js"
 import OrderListModel from "../models/OrderList.js"
 
@@ -13,12 +14,22 @@ export const add = async (req, res) => {
 
         const {userId} = req
 
-        const orderDoc = OrderModel({userId, addressId, phone, name, email})
+        var totalPrice = 0
+        for(const bike of bicycles){
+            const bicycle = await BicycleModel.findById(bike._id).exec()
+            totalPrice = bike.count * bicycle.price
+        }
+
+        const orderDoc = OrderModel({userId, addressId, phone, name, email, price: totalPrice})
         const order = await orderDoc.save()
 
+        
         await bicycles.map(async (bike) => {
             const doc = OrderListModel({
-                bicycleId: bike._id, orderId: order._id, count: bike.count, userId
+                bicycleId: bike._id, 
+                orderId: order._id, 
+                count: bike.count,
+                userId
             })
             await doc.save()
         })
@@ -50,7 +61,7 @@ export const get = async (req, res) => {
         const orderId = req.params.id
 
         const order = await OrderModel.findOne({_id: orderId, userId}).populate(['addressId']).exec()
-        const orderList = await OrderListModel.find({orderId, userId}).exec()
+        const orderList = await OrderListModel.find({orderId, userId}).populate('bicycleId').exec()
 
 
         res.json({
