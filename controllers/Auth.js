@@ -44,7 +44,7 @@ export const register = async (req, res) => {
 
         const oldUser = await UserModel.findOne({username: req.body.username})
         if (oldUser) {
-            return res.status(400).json({message: 'Пользовотель с таким именим уже есть'})
+            return res.status(400).json({message: 'Пользователь с таким именем уже есть'})
         }
 
         // const password = req.body.password
